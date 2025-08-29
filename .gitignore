@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+.turbo/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Test outputs
+test-results/
+playwright-report/
+coverage/
+cypress/videos/
+cypress/screenshots/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Cache directories
+.cache/
+.npm/
+
+# Temporary files
+tmp/
+temp/

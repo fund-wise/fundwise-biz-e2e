@@ -1,0 +1,10 @@
+{
+  "extends": "@fundwise-biz-e2e/typescript-config/e2e.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

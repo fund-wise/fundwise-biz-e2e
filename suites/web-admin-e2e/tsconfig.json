@@ -1,0 +1,10 @@
+{
+  "extends": "@fundwise-biz-e2e/typescript-config/playwright.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "."
+  },
+  "include": [
+    "**/*.ts"
+  ]
+}

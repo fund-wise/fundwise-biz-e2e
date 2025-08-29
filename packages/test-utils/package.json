@@ -1,0 +1,25 @@
+{
+  "name": "@fundwise-biz-e2e/test-utils",
+  "private": true,
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "@fundwise-biz-e2e/typescript-config": "workspace:*",
+    "@types/node": "^22.10.2",
+    "rimraf": "^6.0.1",
+    "typescript": "5.8.3"
+  }
+}

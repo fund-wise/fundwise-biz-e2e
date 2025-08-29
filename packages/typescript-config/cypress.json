@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Cypress Tests",
+  "extends": "./e2e.json",
+  "compilerOptions": {
+    "types": ["node", "cypress"]
+  }
+}

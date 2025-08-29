@@ -1,0 +1,9 @@
+packages:
+  - suites/*
+  - packages/*
+
+onlyBuiltDependencies:
+  - '@playwright/test'
+  - 'playwright'
+  - 'cypress'
+  - esbuild

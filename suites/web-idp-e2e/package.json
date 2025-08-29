@@ -1,0 +1,26 @@
+{
+  "name": "@fundwise-biz-e2e/web-idp-e2e",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf test-results playwright-report"
+  },
+  "dependencies": {
+    "@fundwise-biz-e2e/test-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@fundwise-biz-e2e/eslint-config": "workspace:*",
+    "@fundwise-biz-e2e/typescript-config": "workspace:*",
+    "@playwright/test": "^1.49.1",
+    "@types/node": "^22.10.2",
+    "eslint": "^9.19.0",
+    "rimraf": "^6.0.1",
+    "typescript": "5.8.3"
+  }
+}

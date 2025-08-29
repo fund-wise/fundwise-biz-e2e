@@ -1,0 +1,43 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": ["dist/**", "build/**"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build", "^typecheck"],
+      "outputs": []
+    },
+    "test:e2e": {
+      "dependsOn": ["^build"],
+      "outputs": ["test-results/**", "playwright-report/**", "cypress/videos/**", "cypress/screenshots/**"],
+      "cache": false
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "clean": {
+      "cache": false
+    }
+  },
+  "globalEnv": [
+    "NODE_ENV",
+    "BASE_URL",
+    "API_IDP_URL",
+    "API_BACKEND_URL",
+    "WEB_IDP_URL",
+    "WEB_INVESTOR_URL",
+    "WEB_ADMIN_URL",
+    "TEST_USERNAME",
+    "TEST_PASSWORD",
+    "PLAYWRIGHT_HEADLESS",
+    "CYPRESS_RECORD_KEY"
+  ]
+}

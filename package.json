@@ -1,0 +1,30 @@
+{
+  "name": "fundwise-biz-e2e",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test:e2e": "turbo run test:e2e",
+    "format": "prettier --write \"**/*.{ts,tsx,md,js}\"",
+    "clean": "turbo run clean && rimraf node_modules/.cache .turbo",
+    "clean:all": "pnpm clean && rimraf node_modules suites/*/node_modules packages/*/node_modules",
+    "clean:dry-run": "echo 'Would clean:' && echo '- All dist/build directories' && echo '- Root node_modules' && find suites packages -name node_modules -type d 2>/dev/null || true"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "turbo": "^2.5.6",
+    "typescript": "5.8.3"
+  },
+  "packageManager": "pnpm@10.15.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "pnpm": {
+    "overrides": {
+      "glob@<9": "^11.0.0"
+    }
+  }
+}
