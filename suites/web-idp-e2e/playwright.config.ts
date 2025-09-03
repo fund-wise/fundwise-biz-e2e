@@ -9,7 +9,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [['html'], ['junit', { outputFile: 'test-results/junit-results.xml' }]],
   use: {
-    baseURL: testConfig.baseUrls.webAdmin,
+    baseURL: testConfig.baseUrls.webIdp,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -21,6 +21,7 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
+    // Uncomment these when you need cross-browser testing
     // {
     //   name: 'firefox',
     //   use: { ...devices['Desktop Firefox'] },
@@ -43,8 +44,8 @@ export default defineConfig({
   // webServer: process.env.CI
   //   ? undefined
   //   : {
-  //       command: 'echo "Assuming web-admin is running on port 3000"',
-  //       port: 3000,
+  //       command: 'echo "Assuming web-idp is running on port 3001"',
+  //       port: 3001,
   //       reuseExistingServer: true,
   //     },
 });

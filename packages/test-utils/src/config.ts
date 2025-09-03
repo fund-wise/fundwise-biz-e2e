@@ -1,7 +1,8 @@
 import { config } from 'dotenv';
+import { join } from 'path';
 
-// Load environment variables
-config();
+// Load environment variables from root .env file
+config({ path: join(__dirname, '../../../.env') });
 
 export const testConfig = {
   baseUrls: {

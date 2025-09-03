@@ -9,7 +9,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [['html'], ['junit', { outputFile: 'test-results/junit-results.xml' }]],
   use: {
-    baseURL: testConfig.baseUrls.webAdmin,
+    baseURL: testConfig.baseUrls.webInvestor,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -43,8 +43,8 @@ export default defineConfig({
   // webServer: process.env.CI
   //   ? undefined
   //   : {
-  //       command: 'echo "Assuming web-admin is running on port 3000"',
-  //       port: 3000,
+  //       command: 'echo "Assuming web-investor is running on port 3002"',
+  //       port: 3002,
   //       reuseExistingServer: true,
   //     },
 });
