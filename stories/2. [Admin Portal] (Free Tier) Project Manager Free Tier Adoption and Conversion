@@ -1,0 +1,109 @@
+### The Epic: Onboarding a New Project Manager
+
+This narrative is framed as an "Epic," a large user story in agile development that can be broken down into smaller, actionable stories. It describes the complete journey of a new Project Manager, Maria, as she discovers Fundwise, uses the free tier, encounters its limitations, and is presented with a clear path to upgrade.
+
+**Epic Title:** Project Manager Free Tier Adoption and Conversion
+
+**User Persona:** Maria, an enterprising individual starting her first real estate investment syndicate. She's managing a single, small-scale project (e.g., a duplex renovation) with a handful of investors from her personal network. She needs to look professional and manage compliance correctly, but has no budget for expensive software yet.
+
+**Narrative:** As a new real estate Project Manager, I want to use a professional platform to manage my first project and its investors for free, so that I can build credibility, streamline my workflow, and understand the platform's value before committing to a paid subscription.
+
+---
+
+### User Stories: Maria's Journey
+
+Here is the epic's breakdown into specific user stories, detailing Maria's experience and how the platform enforces the free tier limitations at each step.
+
+This series of stories illustrates a cohesive "freemium-led growth" flywheel. The free tier provides real value upfront, allowing Maria to professionalize her first deal at no cost. The limitations are not arbitrary punishments; they are directly tied to her success and growth. As her business needs expand beyond the generous limits of the free tier, the platform presents a natural, context-aware, and value-driven prompt to become a paying customer.
+
+
+#### **User Story 1: A Frictionless Start**
+
+* **As Maria, I want to sign up for Fundwise quickly and without a credit card, so that I can immediately start exploring the platform.**
+
+**The Experience:**
+Maria lands on the Fundwise website. The primary call-to-action is "Sign Up Free." She clicks it and is taken to a simple registration screen asking for her name, email, password, and user type ("Project Manager"). No credit card is required. Upon submission, her account is created, and she is programmatically placed on the **"Starter (Freemium)" plan**. A welcome email is sent, and she is logged directly into her new dashboard.
+
+**Enforcement Strategy:**
+* **Database Implementation:** A new record is created in the `Users` table. Upon this trigger, a corresponding entry is created in the `Subscriptions` table, linking her new `user_id` to the `plan_id` of the "Starter" plan. The status is set to 'active', and the `current_period_start` is stamped.
+
+
+#### **User Story 2: Creating the First Project**
+
+* **As Maria, I want to set up my first investment project on the platform, so that I can centralize all its information and prepare to invite my investors.**
+
+**The Experience:**
+Maria's dashboard has a clear prompt: "Create Your First Project." She clicks it and easily fills out the project details: name, description, location, and total budget. The project was created successfully. Her dashboard now shows she is using 1 of her 1 allotted active projects.
+
+**Enforcement Strategy:**
+* **Pre-emptive Check:** Before displaying the "Create Project" form, the application backend checks Maria's subscription status.
+* **Logic:** The system queries the `Projects` table, counting the number of projects linked to Maria's `user_id` via the `Project_Users` table (where her role is 'Owner') and where the project `status` is 'In progress'.
+* **Result:** The count is 0, which is less than the "MAX_ACTIVE_PROJECTS" limit of 1 defined for her plan in the `Plan_Entitlements` table. The action is permitted.
+
+
+#### **User Story 3: Hitting the Project Limit**
+
+* **As Maria, my first project is going so well that I want to create a second project, so I can expand my business.**
+
+**The Experience:**
+Feeling confident, Maria returns to her dashboard and clicks the "Create New Project" button again. This time, her action is intercepted. A modal window appears with a message:
+
+> **"Ready for Your Next Project? You're Growing!"**
+>
+> "You've successfully created your first project on the Starter plan, which includes 1 active project. To manage unlimited projects and unlock powerful compliance tools, upgrade to our Professional plan."
+>
+> **Starter Plan (Your Current Plan):**
+> * ✅ 1 Active Project
+> * ✅ Up to 10 Investors
+>
+> **Professional Plan ($199/mo):**
+> * ✅ **Up to 5 Active Projects**
+> * ✅ **Up to 100 Investors Total**
+> [cite_start]* ✅ **Automated 1099 Generation** [cite: 159]
+> [cite_start]* ✅ **DocuSign Integration** [cite: 159]
+>
+> **[Upgrade to Professional]** `[Maybe Later]`
+
+**Enforcement Strategy:**
+* **Logic:** The same pre-emptive check from Story 2 is performed.
+* **Result:** The count of active projects for Maria's `user_id` is now 1. This is equal to the "MAX_ACTIVE_PROJECTS" limit of 1 for her "Starter" plan subscription.
+* **Action:** The backend API returns a "limit reached" error. The frontend interprets this error and displays the upgrade modal instead of the project creation form. The modal is populated with data comparing her current plan to the next tier up, creating a clear value proposition for the upgrade.
+
+
+#### **User Story 4: Hitting the Investor Limit**
+
+* **As Maria, I want to invite all 11 of my interested investors to my project, so that I can fully fund my deal.**
+
+**The Experience:**
+Inside her project dashboard, Maria uses the "Invite Investor" feature. She successfully invites her first 10 investors. The system sends the invitations and creates the corresponding records. When she attempts to add the 11th investor, the "Invite" button triggers a similar modal:
+
+> **"Your Project is Gaining Momentum!"**
+>
+> "You've reached the 10-investor limit for a single project on the Starter plan. To invite more investors and access advanced features, upgrade to Professional."
+>
+> **[Upgrade to Professional]** `[Cancel]`
+
+**Enforcement Strategy:**
+* **Pre-emptive Check:** Before processing the invitation, the backend performs a count.
+* **Logic:** The system queries the `Project_Investors` table, counting the number of records where the `project_id` matches Maria's current project.
+* **Result:** The count is 10. This meets the "investors per project" limit of 10 for the "Starter" plan.
+* **Action:** The API denies the request to add an 11th investor and returns a "limit reached" error, which the frontend uses to trigger the upgrade modal.
+
+
+#### **User Story 5: Encountering a Premium Feature Gate**
+
+* **As Maria, I have successfully completed my project and need to distribute profits and send tax forms, so that I can fulfill my legal obligations to my investors.**
+
+**The Experience:**
+Maria navigates to the "Profit Distribution & Taxes" section of her completed project. She sees the profit calculation tools and uses them successfully. She then sees a button labeled **"Generate 1099 Forms"**. It is clearly marked with a "Premium" badge. When she clicks it, a final modal appears:
+
+> **"Simplify Tax Time with One Click."**
+>
+> "Automated 1099 form generation and distribution is a premium feature that saves you time and ensures compliance. Unlock this and other essential tools by upgrading."
+>
+> **[Upgrade to Professional and Generate 1099s]**
+
+**Enforcement Strategy:**
+* **Feature Gating:** This enforcement is not based on a numerical count but on a binary feature entitlement.
+* **Logic:** When the application UI is rendered, the backend checks the user's entitlements. It queries the `Plan_Entitlements` table for the user's active subscription plan and looks for a record where `entitlement_code` is 'AUTO_1099_GENERATION'.
+* **Result:** The "Starter" plan does not have this entitlement. The backend informs the frontend that this feature is disabled. The button is shown in a "locked" state or with a "Premium" badge. Any attempt to call the API endpoint for this feature is rejected with a "permission denied" error, triggering the upgrade modal as a final confirmation. This directly monetizes one of the platform's cornerstone features as planned.

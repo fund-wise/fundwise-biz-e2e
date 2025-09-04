@@ -14,11 +14,13 @@
   ],
   "dependencies": {
     "axios": "^1.7.2",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "pg": "^8.12.0"
   },
   "devDependencies": {
     "@fundwise-biz-e2e/typescript-config": "workspace:*",
     "@types/node": "^22.10.2",
+    "@types/pg": "^8.11.0",
     "rimraf": "^6.0.1",
     "typescript": "5.8.3"
   }

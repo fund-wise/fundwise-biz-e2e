@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('example test', async ({ page }) => {
+test('sanity test', async ({ page }) => {
   // Placeholder test - replace with actual tests
   expect(true).toBe(true);
 });
