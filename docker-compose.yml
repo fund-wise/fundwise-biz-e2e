@@ -1,0 +1,112 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: fundwise
+      POSTGRES_USER: fundwise
+      POSTGRES_PASSWORD: fundwise123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fundwise"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  api-idp:
+    image: fundwise/api-idp
+    ports:
+      - "4000:3000"
+    volumes:
+      - ./.env.docker:/secrets/.env:ro
+      - .storage/idp:/app/.storage
+      - .storage/idp:/app/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api-backend:
+    image: fundwise/api-backend
+    ports:
+      - "4100:3000"
+    volumes:
+      - ./.env.docker:/secrets/.env:ro
+      - .storage/backend:/app/.storage
+      - .storage/backend:/app/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web-investor:
+    image: fundwise/web-investor
+    ports:
+      - "3100:3000"
+    volumes:
+      - ./.env.docker:/secrets/.env:ro
+    depends_on:
+      - api-backend
+      - api-idp
+
+  web-admin:
+    image: fundwise/web-admin
+    ports:
+      - "3200:3000"
+    volumes:
+      - ./.env.docker:/secrets/.env:ro
+    depends_on:
+      - api-backend
+      - api-idp
+
+  web-idp:
+    image: fundwise/web-idp
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./.env.docker:/secrets/.env:ro
+    depends_on:
+      - api-idp
+  
+  infra-db:
+    image: fundwise/infra-db
+    ports:
+      - "5000:3000"
+    volumes:
+      - ./.env.docker:/secrets/.env:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  e2e-tests:
+    image: fundwise/e2e-tests
+    ports:
+      - "9323:9323"
+    volumes:
+      - ./.env.docker:/secrets/.env:ro
+      - ./test-results:/app/test-results
+      - ./playwright-report:/app/playwright-report
+    environment:
+      - TEST_SUITE=${TEST_SUITE:-}
+      - PWDEBUG=${PWDEBUG:-0}
+      - CI=true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api-idp:
+        condition: service_healthy
+      api-backend:
+        condition: service_healthy
+      infra-db:
+        condition: service_healthy
+      web-idp:
+        condition: service_healthy
+      web-investor:
+        condition: service_healthy
+      web-admin:
+        condition: service_healthy
+    profiles:
+      - test
+
+volumes:
+  postgres_data:

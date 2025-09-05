@@ -10,7 +10,10 @@
     "format": "prettier --write \"**/*.{ts,tsx,md,js}\"",
     "clean": "turbo run clean && rimraf node_modules/.cache .turbo",
     "clean:all": "pnpm clean && rimraf node_modules suites/*/node_modules packages/*/node_modules",
-    "clean:dry-run": "echo 'Would clean:' && echo '- All dist/build directories' && echo '- Root node_modules' && find suites packages -name node_modules -type d 2>/dev/null || true"
+    "clean:dry-run": "echo 'Would clean:' && echo '- All dist/build directories' && echo '- Root node_modules' && find suites packages -name node_modules -type d 2>/dev/null || true",
+    "docker:build": "docker build -t fundwise/e2e-tests:latest .",
+    "docker:test": "pnpm run docker:build && docker compose --profile test down && docker compose --profile test up",
+    "docker:test:ui": "pnpm run docker:build && docker compose --profile test down && docker compose --profile test up -d && echo 'Playwright UI available at http://localhost:9323'"
   },
   "devDependencies": {
     "prettier": "^3.6.2",
