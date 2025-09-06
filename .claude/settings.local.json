@@ -5,7 +5,9 @@
       "Bash(docker compose:*)",
       "Bash(chmod:*)",
       "Bash(docker build:*)",
-      "Bash(docker run:*)"
+      "Bash(docker run:*)",
+      "Bash(pnpm docker:build:*)",
+      "Bash(pnpm:*)"
     ],
     "deny": [],
     "ask": []

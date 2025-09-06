@@ -1,0 +1,52 @@
+# Leverage .gitignore patterns and add docker-specific exclusions
+node_modules
+**/node_modules
+.pnpm-debug.log*
+
+# Build outputs
+/dist
+/build
+.turbo
+
+# Test outputs
+/test-results
+/playwright-report
+/coverage
+/cypress/videos
+/cypress/screenshots
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# VCS
+.git
+.gitignore
+
+# IDE/editor
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs
+
+# Cache
+.cache
+.npm
+
+# Temp
+/tmp
+/temp
+
+# Docker artifacts
+Dockerfile
+.dockerignore

@@ -1,0 +1,42 @@
+## Global text normalization: enforce LF
+* text=auto eol=lf
+
+# Explicit (helps some Git clients)
+*.ts      text eol=lf
+*.tsx     text eol=lf
+*.js      text eol=lf
+*.jsx     text eol=lf
+*.mjs     text eol=lf
+*.cjs     text eol=lf
+*.json    text eol=lf
+*.yml     text eol=lf
+*.yaml    text eol=lf
+*.md      text eol=lf
+*.sh      text eol=lf
+*.ps1     text eol=lf
+*.prisma  text eol=lf
+*.sql     text eol=lf
+*.env     text eol=lf
+Dockerfile text eol=lf
+pnpm-lock.yaml text eol=lf
+
+# SVG is text (allow diffs)
+*.svg     text eol=lf
+
+# Binary assets
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.ico     binary
+*.woff    binary
+*.woff2   binary
+
+# Archives / compressed
+*.zip     binary
+*.tar     binary
+*.gz      binary
+*.tgz     binary
+
+# Generated (example: prisma client)
+packages/infra-db/generated/* linguist-generated
