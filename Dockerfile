@@ -10,48 +10,44 @@ RUN apt-get update && apt-get install -y \
 # Install pnpm globally
 RUN npm install -g pnpm@10.15.0
 
-# Install Playwright
-RUN npx playwright install --with-deps
-
 WORKDIR /app
 
 # Copy package files first for better caching
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+# Copy package.json files from packages directory
+COPY packages/test-utils/package.json ./packages/test-utils/
+COPY packages/typescript-config/package.json ./packages/typescript-config/
+COPY packages/eslint-config/package.json ./packages/eslint-config/
+
+# Copy package.json files from suites directory
 COPY suites/api-idp-e2e/package.json ./suites/api-idp-e2e/
 COPY suites/api-backend-e2e/package.json ./suites/api-backend-e2e/
 COPY suites/web-idp-e2e/package.json ./suites/web-idp-e2e/
 COPY suites/web-investor-e2e/package.json ./suites/web-investor-e2e/
 COPY suites/web-admin-e2e/package.json ./suites/web-admin-e2e/
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile --ignore-scripts
+# Install dependencies including dev dependencies
+RUN pnpm install --frozen-lockfile
 
-# Copy all source files
-COPY . .
+# Install Playwright globally and install system dependencies
+RUN npm install -g playwright@1.55.0 && \
+    playwright install-deps
 
-# Create production image
-FROM node:22-bookworm AS production
-
-# Install system dependencies and pnpm
-RUN apt-get update && apt-get install -y \
-    dumb-init \
-    curl \
-    netcat-openbsd \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN npm install -g pnpm@10.15.0
-
-# Install Playwright browsers
-RUN npx playwright install --with-deps
-
-# Create non-root user
+# Create non-root user with home directory
 RUN groupadd --system --gid 1001 nodejs && \
-    useradd --system --uid 1001 --gid nodejs testrunner
+    useradd --system --uid 1001 --gid nodejs --create-home testrunner
 
-WORKDIR /app
+# Copy all source files with ownership
+COPY --chown=testrunner:nodejs . .
 
-# Copy built application from base
-COPY --from=base --chown=testrunner:nodejs /app ./
+# Create turbo cache and logs directories with proper permissions
+RUN mkdir -p /app/.turbo/cache /app/.turbo/logs /app/node_modules/.cache && \
+    chmod -R 755 /app/.turbo /app/node_modules/.cache
+
+# Install Playwright browsers as testrunner user (without deps since we installed them above)
+USER testrunner
+RUN playwright install chromium firefox webkit
 
 # Set environment variables
 ENV CI=true
@@ -60,15 +56,9 @@ ENV PORT=9323
 # Expose Playwright debugging port
 EXPOSE 9323
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:9323/health || exit 1
-
-# Create entrypoint script
+# Create entrypoint script (already running as testrunner)
 COPY --chown=testrunner:nodejs docker-entrypoint.sh /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh
-
-USER testrunner
 
 ENTRYPOINT ["dumb-init", "--", "/app/docker-entrypoint.sh"]
 CMD ["pnpm", "run", "test:e2e"]

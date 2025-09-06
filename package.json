@@ -2,6 +2,7 @@
   "name": "fundwise-biz-e2e",
   "private": true,
   "scripts": {
+    "init": "pnpm install && pnpm exec playwright install",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
@@ -11,9 +12,9 @@
     "clean": "turbo run clean && rimraf node_modules/.cache .turbo",
     "clean:all": "pnpm clean && rimraf node_modules suites/*/node_modules packages/*/node_modules",
     "clean:dry-run": "echo 'Would clean:' && echo '- All dist/build directories' && echo '- Root node_modules' && find suites packages -name node_modules -type d 2>/dev/null || true",
-    "docker:build": "docker build -t fundwise/e2e-tests:latest .",
-    "docker:test": "pnpm run docker:build && docker compose --profile test down && docker compose --profile test up",
-    "docker:test:ui": "pnpm run docker:build && docker compose --profile test down && docker compose --profile test up -d && echo 'Playwright UI available at http://localhost:9323'"
+    "docker:down": "docker compose down",
+    "docker:infra": "docker compose up -d",
+    "docker:reset": "docker compose exec -T infra-db sh -c \"set -a; . /secrets/.env; set +a; npx prisma migrate reset --force\" && docker compose up -d --force-recreate infra-db"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

@@ -21,7 +21,6 @@ services:
       - "4000:3000"
     volumes:
       - ./.env.docker:/secrets/.env:ro
-      - .storage/idp:/app/.storage
       - .storage/idp:/app/storage
     depends_on:
       postgres:
@@ -33,7 +32,6 @@ services:
       - "4100:3000"
     volumes:
       - ./.env.docker:/secrets/.env:ro
-      - .storage/backend:/app/.storage
       - .storage/backend:/app/storage
     depends_on:
       postgres:
@@ -78,35 +76,35 @@ services:
       postgres:
         condition: service_healthy
 
-  e2e-tests:
-    image: fundwise/e2e-tests
-    ports:
-      - "9323:9323"
-    volumes:
-      - ./.env.docker:/secrets/.env:ro
-      - ./test-results:/app/test-results
-      - ./playwright-report:/app/playwright-report
-    environment:
-      - TEST_SUITE=${TEST_SUITE:-}
-      - PWDEBUG=${PWDEBUG:-0}
-      - CI=true
-    depends_on:
-      postgres:
-        condition: service_healthy
-      api-idp:
-        condition: service_healthy
-      api-backend:
-        condition: service_healthy
-      infra-db:
-        condition: service_healthy
-      web-idp:
-        condition: service_healthy
-      web-investor:
-        condition: service_healthy
-      web-admin:
-        condition: service_healthy
-    profiles:
-      - test
+  # e2e-tests:
+  #   image: fundwise/e2e-tests
+  #   ports:
+  #     - "9323:9323"
+  #   volumes:
+  #     - ./.env.docker:/secrets/.env:ro
+  #     - ./test-results:/app/test-results
+  #     - ./playwright-report:/app/playwright-report
+  #   environment:
+  #     - TEST_SUITE=${TEST_SUITE:-}
+  #     - PWDEBUG=${PWDEBUG:-0}
+  #     - CI=true
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     api-idp:
+  #       condition: service_healthy
+  #     api-backend:
+  #       condition: service_healthy
+  #     infra-db:
+  #       condition: service_healthy
+  #     web-idp:
+  #       condition: service_healthy
+  #     web-investor:
+  #       condition: service_healthy
+  #     web-admin:
+  #       condition: service_healthy
+  #   profiles:
+  #     - test
 
 volumes:
   postgres_data:
